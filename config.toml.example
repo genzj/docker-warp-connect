@@ -1,0 +1,26 @@
+# Docker Network Warp Configuration Example
+
+# Docker connection settings
+[docker]
+socket = "/var/run/docker.sock"
+api_version = "1.41"
+
+# Container identification patterns
+warp_container_name_pattern = "warp-*"
+target_container_label = "network.warp.target"
+network_preference_label = "network.warp.network"
+
+# Routing rules
+[[routing_rules]]
+destination = "0.0.0.0/0"  # Route all traffic
+protocol = "tcp"
+# port_range = [80, 443]  # Optional port range
+
+[[routing_rules]]
+destination = "10.0.0.0/8"  # Route private network traffic
+# protocol = "udp"
+
+# Logging configuration
+[logging]
+level = "info"
+format = "json"  # or "text"

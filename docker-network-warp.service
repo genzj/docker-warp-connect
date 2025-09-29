@@ -1,0 +1,33 @@
+[Unit]
+Description=Docker Network Warp - Automatic container network routing manager
+Documentation=https://github.com/example/docker-network-warp
+After=docker.service
+Requires=docker.service
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User=root
+Group=root
+ExecStart=/usr/local/bin/docker-network-warp --config /etc/docker-network-warp/config.toml
+Restart=always
+RestartSec=5
+TimeoutStartSec=30
+TimeoutStopSec=30
+
+# Security settings
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/run/docker.sock
+
+# Required capabilities for network operations
+AmbientCapabilities=CAP_NET_ADMIN
+CapabilityBoundingSet=CAP_NET_ADMIN
+
+# Environment
+Environment=RUST_LOG=info
+
+[Install]
+WantedBy=multi-user.target

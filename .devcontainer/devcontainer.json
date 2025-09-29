@@ -1,0 +1,30 @@
+{
+  "name": "Docker Network Warp Development",
+  "image": "mcr.microsoft.com/devcontainers/rust:1-1-bullseye",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "enableNonRootDocker": "true"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "rust-lang.rust-analyzer",
+        "vadimcn.vscode-lldb",
+        "ms-vscode.cpptools"
+      ]
+    }
+  },
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y iproute2 net-tools",
+  "mounts": [
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+  ],
+  "privileged": true,
+  "capAdd": [
+    "NET_ADMIN",
+    "SYS_ADMIN"
+  ],
+  "forwardPorts": [],
+  "remoteUser": "vscode"
+}
