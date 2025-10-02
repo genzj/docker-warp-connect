@@ -1,12 +1,12 @@
 //! Docker API integration module
-//! 
+//!
 //! Handles Docker API connections, event monitoring, and container classification
 
-use std::collections::HashMap;
 use crate::error::{EventError, HandlerError};
+use std::collections::HashMap;
 
-pub mod events;
 pub mod classifier;
+pub mod events;
 
 /// Container information structure
 #[derive(Debug, Clone)]
@@ -44,12 +44,15 @@ pub struct ContainerStartEvent {
 
 /// Event monitor trait
 pub trait EventMonitor {
-    async fn start_monitoring(&self) -> Result<(), EventError>;
-    async fn stop_monitoring(&self) -> Result<(), EventError>;
+    fn start_monitoring(&self) -> impl std::future::Future<Output = Result<(), EventError>> + Send;
+    fn stop_monitoring(&self) -> impl std::future::Future<Output = Result<(), EventError>> + Send;
     fn subscribe_to_events(&self, handler: Box<dyn EventHandler>) -> Result<(), EventError>;
 }
 
 /// Event handler trait
 pub trait EventHandler: Send + Sync {
-    fn handle_container_start(&self, event: ContainerStartEvent) -> std::pin::Pin<Box<dyn std::future::Future<Output = Result<(), HandlerError>> + Send + '_>>;
+    fn handle_container_start(
+        &self,
+        event: ContainerStartEvent,
+    ) -> std::pin::Pin<Box<dyn std::future::Future<Output = Result<(), HandlerError>> + Send + '_>>;
 }

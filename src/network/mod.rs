@@ -1,12 +1,12 @@
 //! Network operations module
-//! 
+//!
 //! Handles network namespace operations and container network discovery
 
-use std::net::IpAddr;
 use crate::error::NetworkError;
+use std::net::IpAddr;
 
-pub mod namespace;
 pub mod discovery;
+pub mod namespace;
 
 /// Network namespace representation
 #[derive(Debug, Clone)]
@@ -17,7 +17,17 @@ pub struct NetworkNamespace {
 
 /// Network manager trait
 pub trait NetworkManager {
-    async fn get_container_namespace(&self, container_id: &str) -> Result<NetworkNamespace, NetworkError>;
-    async fn get_container_networks(&self, container_id: &str) -> Result<Vec<crate::docker::NetworkInfo>, NetworkError>;
-    async fn resolve_container_ip(&self, container_id: &str, network: Option<&str>) -> Result<IpAddr, NetworkError>;
+    fn get_container_namespace(
+        &self,
+        container_id: &str,
+    ) -> impl std::future::Future<Output = Result<NetworkNamespace, NetworkError>> + Send;
+    fn get_container_networks(
+        &self,
+        container_id: &str,
+    ) -> impl std::future::Future<Output = Result<Vec<crate::docker::NetworkInfo>, NetworkError>> + Send;
+    fn resolve_container_ip(
+        &self,
+        container_id: &str,
+        network: Option<&str>,
+    ) -> impl std::future::Future<Output = Result<IpAddr, NetworkError>> + Send;
 }

@@ -27,18 +27,18 @@ pub enum IpNetwork {
 
 /// Route manager trait
 pub trait RouteManager {
-    async fn add_route(
+    fn add_route(
         &self,
         namespace: &NetworkNamespace,
         route: &RouteEntry,
-    ) -> Result<(), RouteError>;
-    async fn remove_route(
+    ) -> impl std::future::Future<Output = Result<(), RouteError>> + Send;
+    fn remove_route(
         &self,
         namespace: &NetworkNamespace,
         route: &RouteEntry,
-    ) -> Result<(), RouteError>;
-    async fn list_routes(
+    ) -> impl std::future::Future<Output = Result<(), RouteError>> + Send;
+    fn list_routes(
         &self,
         namespace: &NetworkNamespace,
-    ) -> Result<Vec<RouteEntry>, RouteError>;
+    ) -> impl std::future::Future<Output = Result<Vec<RouteEntry>, RouteError>> + Send;
 }
