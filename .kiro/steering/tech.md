@@ -52,3 +52,17 @@ sudo systemctl start docker-network-warp
 - **Network Capabilities**: Requires CAP_NET_ADMIN for routing table modifications
 - **Docker Socket**: Connects to Docker daemon via Unix socket or TCP
 - **Configuration**: TOML files, environment variables, and CLI arguments
+
+## Rust Programming Practices
+
+### use of `async fn` in public traits is discouraged as auto trait bounds cannot be specified
+
+help: you can alternatively desugar to a normal `fn` that returns `impl Future` and add any desired bounds such as `Send`, but these cannot be relaxed without a breaking API change.
+
+```rust
+// bad
+async fn get_container_networks(&self, id: &str) -> Result<Vec<NetworkInfo>, DockerError>;
+
+// good
+fn get_container_networks(&self, id: &str) -> impl std::future::Future<Output = Result<Vec<NetworkInfo>, DockerError>> + Send;
+```

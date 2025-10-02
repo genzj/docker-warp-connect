@@ -20,8 +20,10 @@ tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 ipnetwork = "0.21"
 futures-util = "0.3"
+regex = "1.11"
 
 [dev-dependencies]
 tokio-test = "0.4"
 tempfile = "3.23"
 defer = "0.2.1"
+async-trait = "0.1"

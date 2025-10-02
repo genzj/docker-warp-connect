@@ -37,15 +37,15 @@
   - Write integration tests for complete configuration precedence chain
   - _Requirements: 6.1, 6.4_
 
-- [ ] 3. Implement Docker API integration
-- [ ] 3.1 Create Docker client wrapper and container data models
+- [x] 3. Implement Docker API integration
+- [x] 3.1 Create Docker client wrapper and container data models
 
   - Define ContainerInfo, NetworkInfo, and related structs
   - Implement Docker client initialization with connection handling
   - Create methods for container inspection and network discovery
   - _Requirements: 3.3, 9.1_
 
-- [ ] 3.2 Implement Docker event monitoring system
+- [x] 3.2 Implement Docker event monitoring system
 
   - Create EventMonitor trait and implementation using bollard events API
   - Implement event filtering for container start/stop events
@@ -53,7 +53,7 @@
   - Write unit tests with mocked Docker API responses
   - _Requirements: 9.1, 9.2, 9.3, 9.4_
 
-- [ ] 3.3 Implement container classification logic
+- [x] 3.3 Implement container classification logic
 
   - Create ContainerClassifier trait and implementation
   - Implement warp container detection based on name patterns
