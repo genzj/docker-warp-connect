@@ -1,0 +1,3 @@
+[env]
+# Mutating env vars cannot guarantee correctness in multithreaded tests.
+RUST_TEST_THREADS = "1"

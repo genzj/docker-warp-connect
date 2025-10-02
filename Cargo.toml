@@ -24,3 +24,4 @@ futures-util = "0.3"
 [dev-dependencies]
 tokio-test = "0.4"
 tempfile = "3.0"
+defer = "0.2.1"

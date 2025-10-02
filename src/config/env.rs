@@ -141,6 +141,7 @@ fn parse_port_range(port_str: &str) -> Result<(u16, u16), ConfigError> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use defer;
     use std::env;
 
     fn setup_env_vars() {
@@ -163,6 +164,7 @@ mod tests {
     }
 
     fn cleanup_env_vars() {
+        println!("env.rs: clean up env vars");
         env::remove_var("DOCKER_NETWORK_WARP_DOCKER_CONNECTION_METHOD");
         env::remove_var("DOCKER_NETWORK_WARP_WARP_CONTAINER_PATTERN");
         env::remove_var("DOCKER_NETWORK_WARP_TARGET_CONTAINER_LABEL");
@@ -174,9 +176,8 @@ mod tests {
 
     #[test]
     fn test_apply_env_config() {
-        // Clean up first to ensure no interference
-        cleanup_env_vars();
         setup_env_vars();
+        defer::defer! { cleanup_env_vars() };
 
         let base_config = AppConfig::default();
         let config = apply_env_config(base_config).unwrap();
@@ -204,8 +205,6 @@ mod tests {
         assert_eq!(config.routing_rules[2].destination, "172.16.0.0/12");
         assert_eq!(config.routing_rules[2].protocol, None);
         assert_eq!(config.routing_rules[2].port_range, None);
-
-        cleanup_env_vars();
     }
 
     #[test]

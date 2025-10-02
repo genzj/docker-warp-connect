@@ -250,6 +250,7 @@ impl ConfigurationManager for DefaultConfigurationManager {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use defer;
     use std::env;
     use std::io::Write;
     use tempfile::NamedTempFile;
@@ -345,6 +346,8 @@ mod tests {
 
     #[test]
     fn test_configuration_manager_with_toml() {
+        cleanup_env_vars();
+
         let toml_content = r#"
 warp_container_name_pattern = "custom-*"
 target_container_label = "custom.label"
@@ -361,25 +364,36 @@ socket = "/custom/docker.sock"
 
         let manager = DefaultConfigurationManager::from_file(temp_file.path()).unwrap();
         let config = manager.load_configuration().unwrap();
-
         assert_eq!(config.warp_container_pattern, "custom-*");
         assert_eq!(config.target_container_label, "custom.label");
         assert_eq!(config.log_level, "debug");
         assert_eq!(config.docker_socket, "/custom/docker.sock");
     }
 
+    // Clean up any existing env vars first
+    fn cleanup_env_vars() {
+        println!("mod.rs: clean up env vars");
+        env::remove_var("DOCKER_NETWORK_WARP_LOG_LEVEL");
+        env::remove_var("DOCKER_NETWORK_WARP_WARP_CONTAINER_PATTERN");
+    }
+
     #[test]
     fn test_configuration_manager_precedence() {
+        println!("mod.rs: in config precedence test");
+
         // Set up environment variables
         env::set_var("DOCKER_NETWORK_WARP_LOG_LEVEL", "trace");
         env::set_var("DOCKER_NETWORK_WARP_WARP_CONTAINER_PATTERN", "env-*");
+
+        // Ensure cleanup happens even if test fails
+        defer::defer! { cleanup_env_vars() };
 
         let toml_content = r#"
 warp_container_name_pattern = "toml-*"
 target_container_label = "toml.label"
 
 [logging]
-level = "debug"
+level = "warn"
 "#;
 
         let mut temp_file = NamedTempFile::new().unwrap();
@@ -409,9 +423,5 @@ level = "debug"
 
         // TOML should be used when no env or cli override
         assert_eq!(config.target_container_label, "toml.label");
-
-        // Cleanup
-        env::remove_var("DOCKER_NETWORK_WARP_LOG_LEVEL");
-        env::remove_var("DOCKER_NETWORK_WARP_WARP_CONTAINER_PATTERN");
     }
 }
