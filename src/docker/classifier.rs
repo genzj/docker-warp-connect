@@ -1,6 +1,5 @@
 //! Container classification logic
 
-use std::collections::HashMap;
 use crate::docker::ContainerInfo;
 
 /// Container type classification
@@ -40,14 +39,18 @@ pub struct DefaultContainerClassifier {
 }
 
 impl DefaultContainerClassifier {
-    pub fn new(warp_pattern: String, target_label: String, network_preference_label: String) -> Self {
+    pub fn new(
+        warp_pattern: String,
+        target_label: String,
+        network_preference_label: String,
+    ) -> Self {
         Self {
             warp_pattern,
             target_label,
             network_preference_label,
         }
     }
-    
+
     fn matches_warp_pattern(&self, name: &str) -> bool {
         // Simple pattern matching - can be enhanced with regex
         if self.warp_pattern.ends_with('*') {
@@ -69,7 +72,7 @@ impl ContainerClassifier for DefaultContainerClassifier {
                 target_network,
             });
         }
-        
+
         // Check if it's a target container by label
         if let Some(warp_target) = self.extract_warp_target(container) {
             return ContainerType::TargetContainer(TargetContainerInfo {
@@ -77,15 +80,18 @@ impl ContainerClassifier for DefaultContainerClassifier {
                 warp_target,
             });
         }
-        
+
         ContainerType::Ignored
     }
-    
+
     fn extract_warp_target(&self, container: &ContainerInfo) -> Option<String> {
         container.labels.get(&self.target_label).cloned()
     }
-    
+
     fn extract_network_preference(&self, container: &ContainerInfo) -> Option<String> {
-        container.labels.get(&self.network_preference_label).cloned()
+        container
+            .labels
+            .get(&self.network_preference_label)
+            .cloned()
     }
 }

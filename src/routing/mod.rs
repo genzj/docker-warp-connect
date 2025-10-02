@@ -1,11 +1,10 @@
 //! Routing table management module
-//! 
+//!
 //! Handles routing table operations within container network namespaces
 
-use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
-use ipnetwork::IpNetwork as ExternalIpNetwork;
-use crate::network::NetworkNamespace;
 use crate::error::RouteError;
+use crate::network::NetworkNamespace;
+use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 
 pub mod manager;
 pub mod rules;
@@ -28,7 +27,18 @@ pub enum IpNetwork {
 
 /// Route manager trait
 pub trait RouteManager {
-    async fn add_route(&self, namespace: &NetworkNamespace, route: &RouteEntry) -> Result<(), RouteError>;
-    async fn remove_route(&self, namespace: &NetworkNamespace, route: &RouteEntry) -> Result<(), RouteError>;
-    async fn list_routes(&self, namespace: &NetworkNamespace) -> Result<Vec<RouteEntry>, RouteError>;
+    async fn add_route(
+        &self,
+        namespace: &NetworkNamespace,
+        route: &RouteEntry,
+    ) -> Result<(), RouteError>;
+    async fn remove_route(
+        &self,
+        namespace: &NetworkNamespace,
+        route: &RouteEntry,
+    ) -> Result<(), RouteError>;
+    async fn list_routes(
+        &self,
+        namespace: &NetworkNamespace,
+    ) -> Result<Vec<RouteEntry>, RouteError>;
 }

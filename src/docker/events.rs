@@ -1,11 +1,11 @@
 //! Docker event monitoring and processing
 
-use bollard::{Docker, API_DEFAULT_VERSION};
+use crate::docker::{ContainerInfo, EventHandler, EventMonitor};
+use crate::error::{DockerError, EventError};
 use bollard::system::EventsOptions;
+use bollard::{Docker, API_DEFAULT_VERSION};
 use futures_util::stream::StreamExt;
-use tracing::{info, error, debug};
-use crate::error::{EventError, DockerError};
-use crate::docker::{EventMonitor, EventHandler, ContainerStartEvent, ContainerInfo};
+use tracing::{debug, error, info};
 
 /// Docker event monitor implementation
 pub struct DockerEventMonitor {
@@ -17,10 +17,10 @@ impl DockerEventMonitor {
     pub fn new(socket_path: &str) -> Result<Self, DockerError> {
         let docker = Docker::connect_with_socket(socket_path, 120, API_DEFAULT_VERSION)
             .map_err(|e| DockerError::ConnectionFailed(e.to_string()))?;
-        
+
         Ok(Self { docker })
     }
-    
+
     /// Get container information by ID
     async fn get_container_info(&self, container_id: &str) -> Result<ContainerInfo, DockerError> {
         // TODO: Implement container inspection
@@ -38,15 +38,15 @@ impl DockerEventMonitor {
 impl EventMonitor for DockerEventMonitor {
     async fn start_monitoring(&self) -> Result<(), EventError> {
         info!("Starting Docker event monitoring");
-        
+
         let options = Some(EventsOptions::<String> {
             since: None,
             until: None,
             filters: std::collections::HashMap::new(),
         });
-        
+
         let mut stream = self.docker.events(options);
-        
+
         while let Some(event_result) = stream.next().await {
             match event_result {
                 Ok(event) => {
@@ -59,16 +59,16 @@ impl EventMonitor for DockerEventMonitor {
                 }
             }
         }
-        
+
         Ok(())
     }
-    
+
     async fn stop_monitoring(&self) -> Result<(), EventError> {
         info!("Stopping Docker event monitoring");
         // TODO: Implement graceful shutdown
         Ok(())
     }
-    
+
     fn subscribe_to_events(&self, _handler: Box<dyn EventHandler>) -> Result<(), EventError> {
         // TODO: Implement event handler subscription
         Ok(())
