@@ -22,6 +22,7 @@ pub struct ContainerInfo {
     pub labels: HashMap<String, String>,
     pub networks: Vec<NetworkInfo>,
     pub state: ContainerState,
+    pub pid: Option<i64>,
 }
 
 /// Network information for containers
@@ -138,6 +139,7 @@ impl BollardDockerClient {
             labels,
             networks,
             state,
+            pid: None,
         })
     }
 
@@ -162,6 +164,7 @@ impl BollardDockerClient {
         } else {
             ContainerState::Stopped
         };
+        let pid = state_info.pid;
 
         // Extract network information
         let mut networks = Vec::new();
@@ -220,6 +223,7 @@ impl BollardDockerClient {
             labels,
             networks,
             state,
+            pid,
         })
     }
 }
@@ -299,12 +303,14 @@ mod tests {
             labels,
             networks: vec![],
             state: ContainerState::Running,
+            pid: Some(30),
         };
 
         assert_eq!(container.id, "test-id");
         assert_eq!(container.name, "test-container");
         assert_eq!(container.state, ContainerState::Running);
         assert_eq!(container.labels.get("app"), Some(&"test".to_string()));
+        assert_eq!(container.pid, Some(30));
     }
 
     #[test]
@@ -336,6 +342,7 @@ mod tests {
             labels: HashMap::new(),
             networks: vec![],
             state: ContainerState::Starting,
+            pid: Some(30),
         };
 
         let event = ContainerStartEvent {
@@ -394,6 +401,7 @@ mod tests {
             labels: HashMap::new(),
             networks: vec![],
             state: ContainerState::Running,
+            pid: Some(30),
         };
 
         mock_client.add_container(container.clone());
@@ -407,6 +415,7 @@ mod tests {
         let inspected = mock_client.inspect_container("test-123").await.unwrap();
         assert_eq!(inspected.id, "test-123");
         assert_eq!(inspected.name, "test-container");
+        assert_eq!(inspected.pid, Some(30));
 
         // Test container not found
         let result = mock_client.inspect_container("nonexistent").await;

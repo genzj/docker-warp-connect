@@ -61,8 +61,8 @@
   - Write unit tests for container classification with various label combinations
   - _Requirements: 1.1, 2.1, 5.1, 5.2_
 
-- [ ] 4. Implement network namespace operations
-- [ ] 4.1 Create network namespace management wrapper
+- [x] 4. Implement network namespace operations
+- [x] 4.1 Create network namespace management wrapper
 
   - Implement NetworkManager trait using netns-rs
   - Create methods for entering and operating within container namespaces
@@ -70,7 +70,7 @@
   - Write unit tests with mocked namespace operations
   - _Requirements: 3.1, 8.2, 8.4_
 
-- [ ] 4.2 Implement container network discovery
+- [x] 4.2 Implement container network discovery
 
   - Add methods to resolve container IP addresses across networks
   - Implement network preference logic using secondary labels

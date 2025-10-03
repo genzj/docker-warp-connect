@@ -209,6 +209,7 @@ mod tests {
             labels,
             networks,
             state: ContainerState::Running,
+            pid: Some(30),
         }
     }
 

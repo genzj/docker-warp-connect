@@ -8,6 +8,8 @@ use std::net::IpAddr;
 pub mod discovery;
 pub mod namespace;
 
+pub use namespace::ContainerNetworkAnalysis;
+
 /// Network namespace representation
 #[derive(Debug, Clone)]
 pub struct NetworkNamespace {

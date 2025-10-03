@@ -46,6 +46,9 @@ pub enum NetworkError {
     #[error("Container network not found: {container_id}")]
     NetworkNotFound { container_id: String },
 
+    #[error("Container {container_id} has multiple networks. Use label to specify network name.")]
+    MultipleNetworksExist { container_id: String },
+
     #[error("Insufficient privileges for network operation")]
     InsufficientPrivileges,
 

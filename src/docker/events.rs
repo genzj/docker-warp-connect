@@ -404,6 +404,7 @@ mod tests {
                     subnet: IpNetwork::new(IpAddr::from_str("172.17.0.0").unwrap(), 16).unwrap(),
                 }],
                 state: ContainerState::Running,
+                pid: Some(30),
             };
 
             // Manually create a ContainerStartEvent and notify handlers
