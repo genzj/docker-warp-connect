@@ -78,8 +78,8 @@
   - Write unit tests for IP resolution with various network configurations
   - _Requirements: 1.4, 2.3_
 
-- [ ] 5. Implement routing table management
-- [ ] 5.1 Create route management wrapper using rtnetlink
+- [x] 5. Implement routing table management
+- [x] 5.1 Create route management wrapper using rtnetlink
 
   - Implement RouteManager trait with add/remove/list route methods
   - Define RouteEntry struct and routing rule data models
@@ -87,7 +87,7 @@
   - Write unit tests with mocked netlink operations
   - _Requirements: 3.2, 8.2, 8.4_
 
-- [ ] 5.2 Implement route calculation and application logic
+- [x] 5.2 Implement route calculation and application logic
 
   - Create methods to calculate routes from target to warp containers
   - Implement route cleanup for stopped containers
